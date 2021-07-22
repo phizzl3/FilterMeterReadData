@@ -1,4 +1,4 @@
-from xlclass import Xlsx
+from xlclass import Xlsx, COLORS
 
 
 def _update_title_cell(out_xl: Xlsx, find_replace: dict) -> None:
@@ -25,6 +25,14 @@ def _set_column_widths(out_xl: Xlsx, col_settings: dict) -> None:
         the size of the specified cells.
     """
     out_xl.set_cell_size(col_settings)
+    
+    
+def _highlight_rows(out_xl: Xlsx) -> None:
+    for row_number, row in enumerate(out_xl.ws.iter_rows(), 1):
+        if row_number >= 5 and 'Grand Total' not in out_xl.ws[f'A{row_number}'].value:
+            if row_number % 2 != 0:
+                for cell in row:
+                    cell.fill = COLORS.get('gray')
 
 
 def format_cells(out_xl: Xlsx, find_replace: dict, col_settings: dict) -> None:
@@ -41,3 +49,4 @@ def format_cells(out_xl: Xlsx, find_replace: dict, col_settings: dict) -> None:
     """
     _update_title_cell(out_xl, find_replace)
     _set_column_widths(out_xl, col_settings)
+    _highlight_rows(out_xl)
