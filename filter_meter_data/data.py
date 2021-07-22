@@ -21,3 +21,7 @@ VALUE_CELL = 'A1'
 
 # Cell containing date range info
 DATE_CELL = 'A2'
+
+# Output filename prefix
+FILE_PREFIX = 'Meter Reads Data'
+
