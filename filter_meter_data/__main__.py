@@ -18,12 +18,12 @@ So, enjoy. ;-)
 """
 
 from re_file_search import get_list
-from data import SOURCE_FILENAME, FOLDER, CHECK_VALUE, VALUE_CELL, DATE_CELL
+from data import SOURCE_FILENAME, FOLDER, CHECK_VALUE, VALUE_CELL, DATE_CELL, FILE_PREFIX
 import dropfile
 from xlclass import Xlsx
 from verify_source import verify_value
-from time import sleep
 from get_date import get_date
+from generate_filename import get_filepath
 
 
 if __name__ == '__main__':
@@ -41,12 +41,14 @@ if __name__ == '__main__':
         
         # Check source for correct contents
         if not verify_value(source_xl, CHECK_VALUE, VALUE_CELL):
-            print(f"File contents don't match for:\n{file}\nPlease verify.")
-            sleep(2)
             continue
             
         # Get formatted dates
         date_range = get_date(source_xl, DATE_CELL)
+        
+    
+        out_file_path = get_filepath(FOLDER, FILE_PREFIX, date_range)
+        
         
         pass
         
