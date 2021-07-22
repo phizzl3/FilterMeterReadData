@@ -20,7 +20,7 @@ So, enjoy. ;-)
 
 ## Requirements
 
-python == 3.6+
+python == 3.6+  
 openpyxl==3.0.6
 
 
