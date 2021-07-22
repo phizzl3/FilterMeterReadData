@@ -1,5 +1,4 @@
 # 01.22.2021
-# Ask for file if source not found
 
 from pathlib import Path
 
@@ -22,7 +21,7 @@ def get():
         - p.stem = filename excluding extension
         - p.suffix = file extension
     """
-    
+
     # Get input file/folder and strip characters
     f = input('\n Drop File: ')
     f = f.strip(" &'\"")
@@ -30,4 +29,3 @@ def get():
     # set Path object and return
     p = Path(f).resolve()
     return p
-    

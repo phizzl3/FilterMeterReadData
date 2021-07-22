@@ -1,54 +1,61 @@
 #!/usr/bin/env python3
 
-"""
-* Search Downloads folder for source files
-* Ask for file if source not found
-* Loop through files
-* Generate Xlsx object
-* Generate empty Xlsx (output) object
-* Check source file for correct info
-* Get formatted date range from source file
-* Write 'Keep' info to output object
-* Format output file cells
-* Generate output filename
-* Save output file to Downloads folder
+import warnings
+from time import sleep
 
-I'm breaking this up into a bunch of modules/files just to experiment. 
-So, enjoy. ;-)
-"""
-
-from re_file_search import get_list
-from data import SOURCE_FILENAME, FOLDER, CHECK_VALUE, VALUE_CELL, DATE_CELL, FILE_PREFIX
 import dropfile
-from xlclass import Xlsx
-from verify_source import verify_value
+import user_values
+from format_cells import format_cells
 from get_date import get_date
-from generate_filename import get_filepath
+from get_filepath import get_filepath
+from re_file_search import get_list
+from verify_value import verify_value
+from write_cells import write_cells
+from xlclass import Xlsx
 
 
-if __name__ == '__main__':
+def get_files_together():
     # Get list of source files from folder
-    source_files = get_list(FOLDER, SOURCE_FILENAME)
+    source_files = get_list(user_values.FOLDER, user_values.SOURCE_FILENAME)
     
     # Ask for file location if none are found (single list item)
     if not source_files:
         source_files = [dropfile.get()]
-        
+    return source_files
+
+
+def process_the_files(source_files):
+    # Process each located file
     for file in source_files:
         # Generate objects
         source_xl = Xlsx(file)
         target_xl = Xlsx()
         
         # Check source for correct contents
-        if not verify_value(source_xl, CHECK_VALUE, VALUE_CELL):
+        if not verify_value(source_xl, user_values.CHECK_VALUE,
+                            user_values.VALUE_CELL):
             continue
-            
-        # Get formatted dates
-        date_range = get_date(source_xl, DATE_CELL)
+       
+        # Get formatted dates and generate output filepath
+        date_range = get_date(source_xl, user_values.DATE_CELL)
+        out_file_path = get_filepath(
+            user_values.FOLDER, user_values.FILE_PREFIX, date_range)
         
+        # Write and format the cells/values
+        write_cells(source_xl, target_xl, user_values.KEEP_COLUMNS)
+        format_cells(target_xl, user_values.REPLACE_VALUE,
+                     user_values.COLUMN_WIDTHS)
+        
+        # Save the output file and display message
+        target_xl.save(out_file_path)
+        print(f"\nFile written to:\n{out_file_path}")
+
+
+if __name__ == '__main__':
+    # Ignore openpyxl style warning
+    warnings.simplefilter('ignore')
     
-        out_file_path = get_filepath(FOLDER, FILE_PREFIX, date_range)
-        
-        
-        pass
-        
+    # Get and process files
+    source_files = get_files_together()
+    process_the_files(source_files)
+    sleep(2)

@@ -1,12 +1,11 @@
 """
-# 05.01.2021
+Modified to remove pandas requirements.
 
 Requirements:
 python 3.6+
 
 openpyxl==3.0.6
-pandas==1.2.2
-xlrd==2.0.1
+
 
 """
 
@@ -14,7 +13,7 @@ import csv
 import datetime
 import operator
 import openpyxl
-import pandas as pd
+# import pandas as pd
 from openpyxl.styles import Font, PatternFill
 from openpyxl.utils.dataframe import dataframe_to_rows
 
@@ -59,55 +58,55 @@ class Xlsx:
         """
         if filepath:
             # Convert xls to xlsx data using Pandas/Xlrd
-            if str(filepath).endswith(".xls"):
-                try:
-                    # Read data from xls and create xlsx object
-                    df = pd.read_excel(filepath, sheet_name=sheetname)
-                    self.path = filepath
-                    self.wb = openpyxl.Workbook()
-                    self.ws = self.wb.active
-                    self.ws.title = sheetname
-                    # Copy row data from xls to new xlsx object
-                    for row in dataframe_to_rows(df):
-                        self.ws.append(row)
-                    # Remove index row/colum created by Pandas
-                    self.ws.delete_cols(1, 1)
-                    self.ws.delete_rows(1, 1)
+            # if str(filepath).endswith(".xls"):
+            #     try:
+            #         # Read data from xls and create xlsx object
+            #         df = pd.read_excel(filepath, sheet_name=sheetname)
+            #         self.path = filepath
+            #         self.wb = openpyxl.Workbook()
+            #         self.ws = self.wb.active
+            #         self.ws.title = sheetname
+            #         # Copy row data from xls to new xlsx object
+            #         for row in dataframe_to_rows(df):
+            #             self.ws.append(row)
+            #         # Remove index row/colum created by Pandas
+            #         self.ws.delete_cols(1, 1)
+            #         self.ws.delete_rows(1, 1)
 
-                except Exception as e:
-                    print(f"\n Error: {e}\n Error converting from xls be sure "
-                          "to include sheetname argument when passing file.")
-                    input(" \"sheetname='Invoice'\", etc\n ENTER to close...")
-                    exit(" Exiting...")
+            #     except Exception as e:
+            #         print(f"\n Error: {e}\n Error converting from xls be sure "
+            #               "to include sheetname argument when passing file.")
+            #         input(" \"sheetname='Invoice'\", etc\n ENTER to close...")
+            #         exit(" Exiting...")
+
+            
+            self.path = filepath
+            self.wb = openpyxl.load_workbook(filepath)
+            # Set first sheet as active if only one is present
+            if len(self.wb.sheetnames) == 1:
+                self.ws = self.wb.active
 
             else:
-                self.path = filepath
-                self.wb = openpyxl.load_workbook(filepath)
-                # Set first sheet as active if only one is present
-                if len(self.wb.sheetnames) == 1:
-                    self.ws = self.wb.active
+                # Set active sheet to sheetname if passed during
+                # object creation
+                if sheetname:
+                    self.ws = self.wb[sheetname]
 
                 else:
-                    # Set active sheet to sheetname if passed during
-                    # object creation
-                    if sheetname:
-                        self.ws = self.wb[sheetname]
+                    # Display availible sheets and set worksheet
+                    # based on selection if 2+ sheets are present
+                    # and sheetname isn't passed.
+                    print('\n Which tab/worksheet are we using?\n')
+                    for num, sheet in enumerate(self.wb.sheetnames, 1):
+                        print(f' {num}: {sheet}')
 
-                    else:
-                        # Display availible sheets and set worksheet
-                        # based on selection if 2+ sheets are present
-                        # and sheetname isn't passed.
-                        print('\n Which tab/worksheet are we using?\n')
-                        for num, sheet in enumerate(self.wb.sheetnames, 1):
-                            print(f' {num}: {sheet}')
-
-                        while True:
-                            try:
-                                self.ws = self.wb[self.wb.sheetnames[int(
-                                    input('\n Selection: '))-1]]
-                                break
-                            except ValueError:
-                                print('\n Try again...')
+                    while True:
+                        try:
+                            self.ws = self.wb[self.wb.sheetnames[int(
+                                input('\n Selection: '))-1]]
+                            break
+                        except ValueError:
+                            print('\n Try again...')
 
         else:
             # If not file is passed, create a new object and set

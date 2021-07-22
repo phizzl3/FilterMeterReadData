@@ -1,6 +1,3 @@
-# Search Downloads folder for source files
-
-
 """
 Recursively searches the passed directory (searchdir) for files matching
 the passed regular expression (regex) and returns either the first match
