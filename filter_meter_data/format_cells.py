@@ -29,10 +29,13 @@ def _set_column_widths(out_xl: Xlsx, col_settings: dict) -> None:
     
 def _highlight_rows(out_xl: Xlsx) -> None:
     for row_number, row in enumerate(out_xl.ws.iter_rows(), 1):
-        if row_number >= 5 and 'Grand Total' not in out_xl.ws[f'A{row_number}'].value:
-            if row_number % 2 != 0:
-                for cell in row:
-                    cell.fill = COLORS.get('gray')
+        if row_number < 5:
+            continue
+        if 'Grand Total' in out_xl.ws[f'A{row_number}'].value:
+            break
+        if row_number % 2 != 0:
+            for cell in row:
+                cell.fill = COLORS.get('gray')
 
 
 def format_cells(out_xl: Xlsx, find_replace: dict, col_settings: dict) -> None:
