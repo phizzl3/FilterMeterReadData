@@ -39,8 +39,7 @@ def process_the_files(source_files):
 
         # Get formatted dates and generate output filepath
         date_range = get_date(source_xl, DATE_CELL)
-        out_file_path = get_filepath(
-            FOLDER, FILE_PREFIX, date_range)
+        out_file_path = get_filepath(FOLDER, FILE_PREFIX, date_range)
 
         # Write and format the cells/values
         write_cells(source_xl, target_xl, KEEP_COLUMNS)
