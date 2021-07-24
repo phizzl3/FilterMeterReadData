@@ -1,6 +1,6 @@
 from copy import copy
 
-from xlclass import COLORS, Xlsx
+from xlclass import COLORS, Font, Xlsx
 
 
 def _update_title_cell(out_xl: Xlsx, find_replace: dict) -> None:
@@ -29,7 +29,7 @@ def _set_column_widths(out_xl: Xlsx, col_settings: dict) -> None:
     out_xl.set_cell_size(col_settings)
 
 
-def _highlight_rows(out_xl: Xlsx, startrow: int = 1) -> None:
+def _highlight_rows(out_xl: Xlsx, startrow: int = 5) -> None:
     """
     Highlights alternating rows starting at startrow until the end of the 
     sheet, unless it hits a row with 'Grand Total' in cell column 'A'.
@@ -51,6 +51,27 @@ def _highlight_rows(out_xl: Xlsx, startrow: int = 1) -> None:
             highlight_row += 2
 
 
+def _set_bold_cells(out_xl: Xlsx, startrow: int = 1, stoprow: int = 5) -> None:
+    """
+    Sets all cells to bold test, beginning at startrow and ending just before
+    stoprow.
+
+    Args:
+        out_xl (Xlsx): Object containing the cells to set as bold.
+        startrow (int, optional): Row number where bold text should begin.
+        Defaults to 1.
+        stoprow (int, optional): Row number (not included) where bold text
+        should stop. Defaults to 5.
+    """
+    for row_number, row in enumerate(out_xl.ws.iter_rows(), 1):
+        if row_number < startrow:
+            continue
+        if row_number >= stoprow:
+            break
+        for cell in row:
+            cell.font = Font(bold=True)
+
+
 def format_cells(out_xl: Xlsx, find_replace: dict, col_settings: dict) -> None:
     """
     Replaces the text in the specified cell with a new value and adjusts
@@ -65,4 +86,5 @@ def format_cells(out_xl: Xlsx, find_replace: dict, col_settings: dict) -> None:
     """
     _update_title_cell(out_xl, find_replace)
     _set_column_widths(out_xl, col_settings)
-    _highlight_rows(out_xl, startrow=5)
+    _highlight_rows(out_xl)
+    _set_bold_cells(out_xl)
