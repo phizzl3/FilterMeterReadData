@@ -51,25 +51,15 @@ def _highlight_rows(out_xl: Xlsx, startrow: int = 5) -> None:
             highlight_row += 2
 
 
-def _set_bold_cells(out_xl: Xlsx, startrow: int = 1, stoprow: int = 5) -> None:
+def _set_bold_cells(out_xl: Xlsx) -> None:
     """
-    Sets all cells to bold test, beginning at startrow and ending just before
-    stoprow.
+    Sets all cells to bold beginning at startrow and ending 
+    just before stoprow.
 
     Args:
         out_xl (Xlsx): Object containing the cells to set as bold.
-        startrow (int, optional): Row number where bold text should begin.
-        Defaults to 1.
-        stoprow (int, optional): Row number (not included) where bold text
-        should stop. Defaults to 5.
     """
-    for row_number, row in enumerate(out_xl.ws.iter_rows(), 1):
-        if row_number < startrow:
-            continue
-        if row_number >= stoprow:
-            break
-        for cell in row:
-            cell.font = Font(bold=True)
+    out_xl.set_bold_rows(startrow=1, stoprow=5)
 
 
 def _total_combined_meters(out_xl: Xlsx, startrow: int = 5) -> None:

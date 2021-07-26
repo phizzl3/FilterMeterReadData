@@ -79,7 +79,6 @@ class Xlsx:
             #         input(" \"sheetname='Invoice'\", etc\n ENTER to close...")
             #         exit(" Exiting...")
 
-            
             self.path = filepath
             self.wb = openpyxl.load_workbook(filepath)
             # Set first sheet as active if only one is present
@@ -673,3 +672,30 @@ class Xlsx:
             row_data.append([cell.value for cell in row])
 
         return row_data
+
+    # NOTE: ADDITIONAL METHODS
+
+    def set_bold_rows(self, startrow: int = 1, stoprow: int = 2) -> object:
+        """
+        Sets all cells in specified rows to bold beginning at startrow 
+        and ending just before stoprow.
+
+        Args:
+            out_xl (Xlsx): Object containing the cells to set as bold.
+            startrow (int, optional): Row number where bold text should begin.
+            Defaults to 1.
+            stoprow (int, optional): Row number (not included) where bold text
+            should stop. Defaults to 2.
+
+        Returns:
+            self: Xlsx object.
+        """
+        for row_number, row in enumerate(self.ws.iter_rows(), 1):
+            if row_number < startrow:
+                continue
+            if row_number >= stoprow:
+                break
+            for cell in row:
+                cell.font = Font(bold=True)
+
+        return self
