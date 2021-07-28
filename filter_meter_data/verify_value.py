@@ -22,3 +22,4 @@ def verify_value(xl: Xlsx, val: str, cell: str) -> bool:
     
     print(f"\nFile contents don't match for:\n{xl.path}\nPlease verify.\n")
     sleep(2)
+    return False

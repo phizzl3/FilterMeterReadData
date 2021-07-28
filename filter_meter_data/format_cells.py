@@ -50,21 +50,16 @@ def _set_bold_rows(out_xl: Xlsx) -> None:
 
 def _total_combined_meters(out_xl: Xlsx, startrow: int = 5) -> None:
     """
-    Adds up the last row and sets the final amount to the last cell in 
-    the column.
+    Adds up the Grand Total BW Usage and Total Color Usage and inserts
+    it into Grand Total Meter Usage.
 
     Args:
         out_xl (Xlsx): Object containing the amounts to be totaled. 
         startrow (int, optional): Row number to start adding. Defaults to 5.
     """
-    total_meter = 0
-    for row_number, row in enumerate(out_xl.ws.iter_rows(), 1):
-        if row_number < startrow:
-            continue
-        if 'Grand Total' in out_xl.ws[f'A{row_number}'].value:
-            out_xl.ws[f'N{row_number}'] = total_meter
-            break
-        total_meter += out_xl.ws[f'N{row_number}'].value
+    total_bw = out_xl.ws[f'L{out_xl.ws.max_row}'].value
+    total_color = out_xl.ws[f'M{out_xl.ws.max_row}'].value
+    out_xl.ws[f'N{out_xl.ws.max_row}'] = total_bw + total_color 
 
 
 def format_cells(out_xl: Xlsx, find_replace: dict, col_settings: dict) -> None:

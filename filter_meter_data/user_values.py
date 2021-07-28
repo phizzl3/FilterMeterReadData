@@ -32,7 +32,7 @@ FILE_PREFIX = 'Meter Reads Data'
 # Column width settings dictionary pairs {column: size}
 COLUMN_WIDTHS = {'A': 17, 'B': 35, 'C': 27, 'D': 16,
                  'E': 9, 'F': 6, 'G': 28, 'H': 12,
-                 'I': 12, 'J': 9, 'K': 14, 'L': 14,
+                 'I': 12, 'J': 9, 'K': 14, 'L': 15,
                  'M': 16, 'N': 17}
 
 # Find and replace information to update title cell
