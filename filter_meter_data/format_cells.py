@@ -1,6 +1,4 @@
-from copy import copy
-
-from xlclass import COLORS, Font, Xlsx
+from xlclass import Xlsx
 
 
 def _update_title_cell(out_xl: Xlsx, find_replace: dict) -> None:
@@ -29,29 +27,17 @@ def _set_column_widths(out_xl: Xlsx, col_settings: dict) -> None:
     out_xl.set_cell_size(col_settings)
 
 
-def _highlight_rows(out_xl: Xlsx, startrow: int = 5) -> None:
+def _highlight_rows(out_xl: Xlsx) -> None:
     """
-    Highlights alternating rows starting at startrow until the end of the 
-    sheet, unless it hits a row with 'Grand Total' in cell column 'A'.
-
+    Highlights alternating rows from row 5 up to row 166.
+    
     Args:
         out_xl (Xlsx): Object containing the cells to highlight
-        startrow (int, optional): Row number where highlighting should begin.
-        Defaults to 1.
     """
-    highlight_row = copy(startrow)
-    for row_number, row in enumerate(out_xl.ws.iter_rows(), 1):
-        if row_number < startrow:
-            continue
-        if 'Grand Total' in out_xl.ws[f'A{row_number}'].value:
-            break
-        if row_number == highlight_row:
-            for cell in row:
-                cell.fill = COLORS.get('gray')
-            highlight_row += 2
+    out_xl.highlight_rows(startrow=5, stoprow=166, alternate=True)
 
 
-def _set_bold_cells(out_xl: Xlsx) -> None:
+def _set_bold_rows(out_xl: Xlsx) -> None:
     """
     Sets all cells to bold beginning at startrow and ending 
     just before stoprow.
@@ -79,12 +65,13 @@ def _total_combined_meters(out_xl: Xlsx, startrow: int = 5) -> None:
             out_xl.ws[f'N{row_number}'] = total_meter
             break
         total_meter += out_xl.ws[f'N{row_number}'].value
-        
+
 
 def format_cells(out_xl: Xlsx, find_replace: dict, col_settings: dict) -> None:
     """
-    Replaces the text in the specified cell with a new value and adjusts
-    the width of the cells.
+    Updates the title cell, sets the column widths, sets the top rows
+    to bold, highlights alternating rows of data in gray, and adds and
+    inserts the total meters at the bottom.
 
     Args:
         out_xl (Xlsx): Object containing the cell data to adjust.
@@ -96,5 +83,5 @@ def format_cells(out_xl: Xlsx, find_replace: dict, col_settings: dict) -> None:
     _update_title_cell(out_xl, find_replace)
     _set_column_widths(out_xl, col_settings)
     _highlight_rows(out_xl)
-    _set_bold_cells(out_xl)
+    _set_bold_rows(out_xl)
     _total_combined_meters(out_xl)

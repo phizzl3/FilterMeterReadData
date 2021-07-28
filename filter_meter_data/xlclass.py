@@ -12,6 +12,7 @@ openpyxl==3.0.6
 import csv
 import datetime
 import operator
+
 import openpyxl
 # import pandas as pd
 from openpyxl.styles import Font, PatternFill
@@ -681,7 +682,6 @@ class Xlsx:
         and ending just before stoprow.
 
         Args:
-            out_xl (Xlsx): Object containing the cells to set as bold.
             startrow (int, optional): Row number where bold text should begin.
             Defaults to 1.
             stoprow (int, optional): Row number (not included) where bold text
@@ -693,9 +693,46 @@ class Xlsx:
         for row_number, row in enumerate(self.ws.iter_rows(), 1):
             if row_number < startrow:
                 continue
-            if row_number >= stoprow:
+            if row_number == stoprow:
                 break
             for cell in row:
                 cell.font = Font(bold=True)
+
+        return self
+
+    def highlight_rows(self, startrow: int = 1,
+                       stoprow: int = 2, fillcolor: str = 'gray',
+                       alternate: bool = False) -> object:
+        """
+        Highlights specified rows (optionally alternating) using passed 
+        color (from xlclass.COLORS dict) starting at startrow and ending 
+        just before stoprow.
+
+        Args:
+            startrow (int, optional): Row number where highlighting should
+            begin. Defaults to 1.
+            stoprow (int, optional): Row number (not included in highlights)
+            where highlighting should end. Defaults to 2.
+            fillcolor (str, optional): Color choice from xlclass.COLORS 
+            dictionary to be used as fill color. Defaults to 'gray'.
+            alternate (bool, optional): Option to alternate rows to 
+            highlight. Defaults to False.
+
+        Returns:
+            self: Xlsx object.
+        """
+        highlight_row = startrow
+        for row_number, row in enumerate(self.ws.iter_rows(), 1):
+            if row_number < startrow:
+                continue
+            if row_number == stoprow:
+                break
+            if row_number == highlight_row:
+                for cell in row:
+                    cell.fill = COLORS.get(fillcolor)
+                if not alternate:
+                    highlight_row += 1
+                else:
+                    highlight_row += 2
 
         return self
