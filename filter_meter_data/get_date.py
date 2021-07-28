@@ -17,4 +17,5 @@ def get_date(xl: Xlsx, cell: str) -> str:
     date = date.strip('Date Range: ')
     date = date.replace('/', '.')
     date = date.replace(' ', '')
+    
     return date

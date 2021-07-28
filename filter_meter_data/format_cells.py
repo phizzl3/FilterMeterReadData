@@ -27,10 +27,46 @@ def _set_column_widths(out_xl: Xlsx, col_settings: dict) -> None:
     out_xl.set_cell_size(col_settings)
 
 
+def _highlight_rows(out_xl: Xlsx) -> None:
+    """
+    Highlights alternating rows from row 5 up to row 166.
+    
+    Args:
+        out_xl (Xlsx): Object containing the cells to highlight
+    """
+    out_xl.highlight_rows(startrow=5, stoprow=166, alternate=True)
+
+
+def _set_bold_rows(out_xl: Xlsx) -> None:
+    """
+    Sets all cells to bold beginning at startrow and ending 
+    just before stoprow.
+
+    Args:
+        out_xl (Xlsx): Object containing the cells to set as bold.
+    """
+    out_xl.set_bold_rows(startrow=1, stoprow=5)
+
+
+def _total_combined_meters(out_xl: Xlsx, startrow: int = 5) -> None:
+    """
+    Adds up the Grand Total BW Usage and Total Color Usage and inserts
+    it into Grand Total Meter Usage.
+
+    Args:
+        out_xl (Xlsx): Object containing the amounts to be totaled. 
+        startrow (int, optional): Row number to start adding. Defaults to 5.
+    """
+    total_bw = out_xl.ws[f'L{out_xl.ws.max_row}'].value
+    total_color = out_xl.ws[f'M{out_xl.ws.max_row}'].value
+    out_xl.ws[f'N{out_xl.ws.max_row}'] = total_bw + total_color 
+
+
 def format_cells(out_xl: Xlsx, find_replace: dict, col_settings: dict) -> None:
     """
-    Replaces the text in the specified cell with a new value and adjusts
-    the width of the cells.
+    Updates the title cell, sets the column widths, sets the top rows
+    to bold, highlights alternating rows of data in gray, and adds and
+    inserts the total meters at the bottom.
 
     Args:
         out_xl (Xlsx): Object containing the cell data to adjust.
@@ -41,3 +77,6 @@ def format_cells(out_xl: Xlsx, find_replace: dict, col_settings: dict) -> None:
     """
     _update_title_cell(out_xl, find_replace)
     _set_column_widths(out_xl, col_settings)
+    _highlight_rows(out_xl)
+    _set_bold_rows(out_xl)
+    _total_combined_meters(out_xl)

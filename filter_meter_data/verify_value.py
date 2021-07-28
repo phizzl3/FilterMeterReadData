@@ -19,5 +19,7 @@ def verify_value(xl: Xlsx, val: str, cell: str) -> bool:
     """
     if xl.ws[cell].value == val:
         return True
+    
     print(f"\nFile contents don't match for:\n{xl.path}\nPlease verify.\n")
     sleep(2)
+    return False
